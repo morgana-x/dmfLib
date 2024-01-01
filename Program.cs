@@ -26,35 +26,51 @@ public partial class Program
     public static void Main(string[] args)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
+        Console.ForegroundColor = ConsoleColor.Gray;
         Console.OutputEncoding = Encoding.Unicode; //Encoding.GetEncoding("Shift-JIS");
         Console.InputEncoding = Encoding.Unicode;
 
 
-
+        
         if (args.Length < 1)
         {
-            Console.WriteLine("Enter the location of the .dat DMF file!");
+            Console.WriteLine("Enter or drag and drop the file you want to extract\nOR\nEnter or drag and drop the folder you want to repack");
         }
         string selectedFile = (args.Length > 0) ? args[0] : Console.ReadLine().Replace("\"", string.Empty);
+        //Console.WriteLine(selectedFile);
         string outDirectory = Directory.GetParent(selectedFile).FullName;
 
+        //Console.WriteLine("Press 1 to extract, press 2 to repack");
 
+        if (Directory.Exists(selectedFile))
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Packing...");
+            Dmf.Pack(selectedFile);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Packed!");
+            Main(new string[] { });
+            return;
+        }
         Dmf DmfFileInstance = new Dmf(selectedFile);
 
         if (!DmfFileInstance.IsDMF()) // Check if it's an actual DMF file
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Provided File is not a DMF File!");
             Main(new string[] { }); return;
         }
 
+        Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("Extracting Files to " + outDirectory + "/dataExtract/ ....");
 
-        DmfFileInstance.ExtractFiles(outDirectory);
-
+        DmfFileInstance.ExtractFiles(outDirectory + selectedFile.Substring(selectedFile.LastIndexOf("\\")).Replace(".dat","") + "_extracted\\" ) ;
+        DmfFileInstance.Dispose();
+        DmfFileInstance = null;
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Extracted Files!");
 
         Main(new string[] { });
-
+        
     }
 }

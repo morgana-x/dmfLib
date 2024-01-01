@@ -9,7 +9,7 @@ namespace SaibanDataLib
     // ALl this code genuinely sucks I'm sorry :(
     public class Dmf
     {
-        public static string MagicByte = "DMF"; // Identifier
+        public static string MagicByte = "DMF "; // Identifier
         public FileStream dataStream;
 
         public List<string> filePaths = new List<string>(); // Should Probably have this as a class but....
@@ -90,6 +90,12 @@ namespace SaibanDataLib
             }
 
             string newPath = outDirectory + "\\dataExtract\\" + filePath;
+            if (fileData.Length == 0)
+            {
+                //Console.WriteLine("Error filedata length 0: " + filePath);
+                File.Create(newPath);
+                return;
+            }
             if (!newPath.EndsWith(".txt") && !newPath.EndsWith(".scn"))
             {
                 File.WriteAllBytes(newPath, fileData);
@@ -106,13 +112,13 @@ namespace SaibanDataLib
             {
                 ReadFileMetaData();
             }
-            if (Directory.Exists(outDirectory + "\\dataExtract\\"))
+            if (Directory.Exists(outDirectory))
             {
-                Directory.Delete(outDirectory + "\\dataExtract\\", true);
+                Directory.Delete(outDirectory, true);
             }
-            if (!Directory.Exists(outDirectory + "\\dataExtract\\"))
+            if (!Directory.Exists(outDirectory))
             {
-                Directory.CreateDirectory(outDirectory + "\\dataExtract\\");
+                Directory.CreateDirectory(outDirectory);
             }
             for (int i = 0; i < filePaths.Count; i++)
             {
@@ -122,6 +128,7 @@ namespace SaibanDataLib
                 {
                     continue;
                 }
+            
                 filePath = filePath.Replace("/", "\\");
                 string[] filePathParts = filePath.Split('\\');
                 string thing = "";
@@ -135,7 +142,7 @@ namespace SaibanDataLib
                         break;
                     }
                     thing += "\\" + part;
-                    string newDir = outDirectory + "\\dataExtract\\" + thing;
+                    string newDir = outDirectory + thing;
                     //Console.WriteLine(newDir);
                     if (!Directory.Exists(newDir))
                     {
@@ -143,7 +150,16 @@ namespace SaibanDataLib
                     }
                 }
 
-                string newPath = outDirectory + "\\dataExtract\\" + filePath;
+                string newPath = outDirectory + filePath;
+
+                if (fileData.Length == 0)
+                {
+                    //Console.WriteLine("Error filedata length 0: " + filePath);
+                    File.Create(newPath);
+                    continue;
+                }
+                File.WriteAllBytes(newPath, fileData);
+                /*
                 if (!newPath.EndsWith(".txt") && !newPath.EndsWith(".scn"))
                 {
                     File.WriteAllBytes(newPath, fileData);
@@ -152,7 +168,7 @@ namespace SaibanDataLib
                 {
                     string japaneseText = System.Text.Encoding.GetEncoding("Shift-JIS").GetString(fileData);
                     File.WriteAllText(newPath, japaneseText);
-                }
+                }*/
 
 
 
@@ -201,6 +217,91 @@ namespace SaibanDataLib
                 fileSizes.Add(fileSize);
             }
         }
+        public static void Pack(string folder) // temp
+        {
+            List<string> tempfilePaths = new List<string>();
+            List<int> tempfileSizes = new List<int>();
+            List<byte[]> tempfileData = new List<byte[]>();
+            List<long> tempFileLocations = new List<long>();
+            List<long> tempFileMetaLocations = new List<long>();
+            FileStream tempDMFFile = new FileStream(folder + ".dat", FileMode.Create);
+            EnumerationOptions enumuratorOptions = new EnumerationOptions();
+            enumuratorOptions.RecurseSubdirectories = true;
+            tempfilePaths = Directory.EnumerateFiles(folder, "*", enumuratorOptions).ToList();
+
+
+
+            tempDMFFile.Position = 0;
+            byte[] identifier = new byte[4]{ 68,77,70,32};
+            tempDMFFile.Write(identifier);
+            tempDMFFile.Position = 4;
+            tempDMFFile.Write(BitConverter.GetBytes(tempfilePaths.Count));
+            tempDMFFile.Position = 8;
+            for (int i =0; i < tempfilePaths.Count; i++)
+            {
+          
+                int fileLocation = 0;
+        
+              
+                string newPath = tempfilePaths[i].Replace(folder + "\\", "").Replace("\\", "/");
+                string oldPath = tempfilePaths[i];
+                tempfilePaths[i] = newPath;
+          
+                tempfileData.Add(File.ReadAllBytes(oldPath));
+
+                byte[] PathAsBytes = Encoding.GetEncoding("Shift-JIS").GetBytes(newPath.Substring(0, newPath.Length - 4));
+
+                string extension = newPath.Substring(newPath.Length - 4);
+                extension = extension.ToLowerInvariant();
+                byte[] ExtensionAsBytes = Encoding.ASCII.GetBytes(extension);
+
+
+                tempDMFFile.Write(BitConverter.GetBytes(PathAsBytes.Length + ExtensionAsBytes.Length));
+
+                foreach (byte c in PathAsBytes)
+                {
+                    tempDMFFile.WriteByte(c);
+                }
+
+                foreach (byte c in ExtensionAsBytes)
+                {
+                    tempDMFFile.WriteByte(((byte)c));
+                }
+          
+     
+                int fileSize = tempfileData[i].Length;
+                tempFileMetaLocations.Add(tempDMFFile.Position);
+                tempDMFFile.Write(BitConverter.GetBytes(fileLocation));
+                tempDMFFile.Write(BitConverter.GetBytes(fileSize));
+
+             
+            }
+            Console.WriteLine("Number of files: " + tempfilePaths.Count);
+            for (int i =0; i < tempfileData.Count; i++)
+            {
+                long fileLoc = tempDMFFile.Position;
+                tempFileLocations.Add(tempDMFFile.Position);
+                int fileSize = tempfileData[i].Length;
+                /*if (tempfilePaths[i].EndsWith(".txt") || tempfilePaths[i].EndsWith(".spn"))
+                {
+                    fileSize = Encoding.GetEncoding("Shift-JIS").GetString(tempfileData[i]).Length;
+                }*/
+                tempDMFFile.Write(tempfileData[i]);
+               
+                long currentLoc = tempDMFFile.Position;
+
+                tempDMFFile.Position = tempFileMetaLocations[i];
+                //tempDMFFile.Position += (tempfilePaths[i].Length) + 4 + 5;
+                tempDMFFile.Write(BitConverter.GetBytes((int)fileLoc));
+                tempDMFFile.Write(BitConverter.GetBytes(fileSize));
+                tempDMFFile.Position = currentLoc;
+            }
+
+            tempDMFFile.Dispose();
+            tempDMFFile.Close();
+
+
+        }
         public void ReadHeader()
         {
             if (!IsDMF())
@@ -212,6 +313,12 @@ namespace SaibanDataLib
             dataStream.Read(lengthOfMetaBuffer);
             NumberOfFiles = BitConverter.ToInt16(lengthOfMetaBuffer);
             ReadFileMetaData();
+        }
+        public void Dispose()
+        {
+            dataStream.Dispose();
+            dataStream.Close();
+
         }
         public Dmf(FileStream stream)
         {
