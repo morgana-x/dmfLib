@@ -1,5 +1,5 @@
 # dmfLib
-A utility for DMF files
+A utility for extracting the contents of DMF files
 
 Typically these files are with the extension .DAT
 
