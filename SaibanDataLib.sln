@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DmfExtract", "DmfExtract\DmfExtract.csproj", "{6350B34C-69BF-43E0-BD6D-28C999788F3C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DmfLib", "DmfLib\DmfLib.csproj", "{63916B97-6E2B-41E7-87AB-BEFFE564E633}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6350B34C-69BF-43E0-BD6D-28C999788F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6350B34C-69BF-43E0-BD6D-28C999788F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6350B34C-69BF-43E0-BD6D-28C999788F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6350B34C-69BF-43E0-BD6D-28C999788F3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63916B97-6E2B-41E7-87AB-BEFFE564E633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63916B97-6E2B-41E7-87AB-BEFFE564E633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63916B97-6E2B-41E7-87AB-BEFFE564E633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63916B97-6E2B-41E7-87AB-BEFFE564E633}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DB61618-5A93-468B-8A0B-97E62BE0DF3B}
+	EndGlobalSection
+EndGlobal
