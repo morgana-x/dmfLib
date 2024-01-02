@@ -1,7 +1,7 @@
 # dmfLib
 A utility for extracting and repacking the contents of DMF files
 
-Typically these files are with the extension .DAT
+Typically these files are with the extension .DAT or .DMF
 
 Capable of 1:1 File extraction and repacking
 
