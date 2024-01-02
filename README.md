@@ -17,6 +17,6 @@ https://archive.org/details/saiban_202212suzumiya-haruhi-no-gyakuten-21
 https://archive.org/details/suzumiya-haruhi-no-gyakuten-3
 
 
-This may also work on "Queen Busters"'s .DMF files (A super smash brothers styled game also made by the same developers)
+This also works on Queen Busters's .DMF files (A super smash brothers styled game also made by the same developers)
 
 https://archive.org/details/queen-busters
