@@ -16,6 +16,7 @@ https://archive.org/details/saiban_202212suzumiya-haruhi-no-gyakuten-21
 
 https://archive.org/details/suzumiya-haruhi-no-gyakuten-3
 
+[Link to english patch](https://github.com/morgana-x/HaruhiNoGyakuten-English-Patch) for the Suzumiya Haruhi Gyakuten series I'm making
 
 This also works on Queen Busters's .DMF files (A super smash brothers styled game also made by the same developers)
 
